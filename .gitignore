@@ -1,0 +1,12 @@
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/src/.preload.php
+/application/var/
+/application/vendor/
+###< symfony/framework-bundle ###
+/.idea
+/.docker
+

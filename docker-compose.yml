@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  minio:
+    env_file:
+      - .docker/.env
+    image: minio/minio:RELEASE.2020-09-10T22-02-45Z
+    volumes:
+      - ./.docker/storage:/export
+    command: server /export
+    ports:
+      - ${MINIO_PORT}:9000
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+  devmail:
+    env_file:
+      - .docker/.env
+    image: djfarrelly/maildev
+    ports:
+      - ${HTTP_DEVMAIL_PORT}:80
+  rabbit:
+    env_file:
+      - .docker/.env
+    image: rabbitmq:3-management
+    ports:
+      - ${HTTP_RABBIT_MANAGEMENT_PORT}:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+  application:
+    ports:
+      - ${HTTP_APPLICATION_PORT}:8080
+    env_file:
+      - .docker/.env
+    environment:
+      APP_ENV: dev
+      COMPOSER_MEMORY_LIMIT: -1
+    build:
+      args:
+        composer: 'false'
+        development: 'true'
+      dockerfile: .docker/php/Dockerfile
+      context: .
+    volumes:
+      - ./.docker/.composerAuth.json:/root/.composer/auth.json
+    working_dir: /var/www
+    links:
+      - devmail
+      - mariadb
+      - rabbit
+  adminer:
+    image: adminer
+    restart: always
+    environment:
+      ADMINER_DEFAULT_SERVER: mariadb
+    links:
+      - mariadb
+    ports:
+      - ${ADMINER_PORT}:8080
+  mariadb:
+    env_file:
+      - .docker/.env
+    image: helppc/mariadb:latest
+    volumes:
+      - ./.docker/database:/var/lib/mysql
+    ports:
+      - ${MARIADB_PORT}:3306
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+  phpstan:
+    image: phpstan/phpstan:latest
+    env_file:
+      - .docker/.env
+    command: analyse -c phpstan.neon --ansi --pro
+    ports:
+      - ${PHPSTAN_PRO_WEB_PORT}:${PHPSTAN_PRO_WEB_PORT}

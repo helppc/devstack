@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  application:
+    volumes:
+      - applicationData:/var/www
+  phpstan:
+    volumes:
+      - applicationData:/app
+volumes:
+  applicationData:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+      device: ":/System/Volumes/Data$PWD/application"
