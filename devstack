@@ -108,6 +108,10 @@ crossroad() {
       host: adminer
       address: http://$DEVSTACK_HOST:$ADMINER_PORT
 
+    Browserless:
+      host: browserless
+      address: http://$DEVSTACK_HOST:$HTTP_BROWSERLESS_PORT
+
 EOF
 }
 
