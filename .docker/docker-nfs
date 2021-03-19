@@ -54,7 +54,7 @@ echo "== Setting up nfs..."
 
 DIRECTORY=`PWD`
 if [ -d "$DIRECTORY" ]; then
-  DIRECTORY="/System/Volumes/Data"`PWD`"/application"
+  DIRECTORY="/System/Volumes/Data"`PWD`
 fi
 
 LINE=$DIRECTORY" -alldirs -mapall=$U:$G localhost"

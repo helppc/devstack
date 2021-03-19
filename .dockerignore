@@ -1,2 +1,13 @@
-.docker
-application/vendor
+/.docker
+/.idea
+/vendor
+/.editorconfig
+/.dockerignore
+/.phpunit.result.cache
+/rector.php
+/.gitignore
+/devstack
+/docker-compose.local.yml
+/docker-compose.yml
+/Project.xml
+/README.md

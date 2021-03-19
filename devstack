@@ -97,8 +97,11 @@ crossroad() {
       address: http://$DEVSTACK_HOST:$HTTP_DEVMAIL_PORT
 
     Web:
-      host: application
+      host: nginx
       address: http://$DEVSTACK_HOST:$HTTP_APPLICATION_PORT
+
+    PHPFPM
+      host: php-fpm
 
     Phpstan:
       host: phpstan
@@ -130,7 +133,7 @@ up() {
 }
 
 migrate() {
-    fire application php bin/console.php migration:continue
+    fire php-fpm php bin/console.php migration:continue
 }
 
 build() {
@@ -238,7 +241,7 @@ case "$1" in
         exit 0
         ;;
     c|console)
-        fire application php bin/console.php "${*:2}"
+        fire php-fpm php bin/console.php "${*:2}"
         exit 0
         ;;
     *)
